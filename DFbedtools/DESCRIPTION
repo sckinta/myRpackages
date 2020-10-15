@@ -1,13 +1,13 @@
 Package: DFbedtools
-Title: What the Package Does (One Line, Title Case)
+Title: R version of bedtools on dataframe
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Chun",
+           family = "Su",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
+           email = "sckinta@gmail.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: R version of bedtools on data.frame.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
