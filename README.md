@@ -1,3 +1,4 @@
 # myRpackages
-This respository stores customed R packages
-- DFbedtools
+This respository stores custom R packages
+- [DFbedtools](./DFbedtools)
+- [parseIbed](./parseIbed)
