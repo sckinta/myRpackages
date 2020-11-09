@@ -4,7 +4,7 @@
 #'
 #' @param ibed ibed file from Chicago or data.frame with ibed header
 #' ibed header requirement: bait_chr, bait_start, bait_end, bait_name, otherEnd_chr, otherEnd_start,
-#' otherEnd_end, otherEnd_name
+#' otherEnd_end, otherEnd_name, int_id
 #' @param baitmap bait design file corresponding to interaction being called in Chicago
 #'
 #' @return data.frame of summary stats
@@ -19,11 +19,21 @@ summarise_from_ibed <- function(ibed, baitmap){
                 select(bait_chr, bait_start, bait_end, bait_name)
 
         if("data.frame" %in% class(ibed)){
+                file="ibed"
+        }else if(file.exists(ibed)){
+                file = ibed
+        }
+
+        if("data.frame" %in% class(ibed)){
                 ibed=ibed
         }else if(file.exists(ibed)){
                 ibed = read_ibed_with_int_id(ibed)
         }else{
                 stop("ibed can be either a ibed file or ibed data.frame")
+        }
+
+        if ("int_id" %in% colnames(ibed)){
+                ibed = read_ibed_with_int_id(ibed)
         }
 
         # all bait fragment number in design
@@ -116,11 +126,6 @@ summarise_from_ibed <- function(ibed, baitmap){
         # other end ratio with more than 4 baits
         oe_ratio_more4bait_per_oe = oe_n_more4bait_per_oe/oe_n
 
-        if("data.frame" %in% class(ibed)){
-                file="ibed"
-        }else if(file.exists(ibed)){
-                file = ibed
-        }
 
         tibble(
                 file=file,
