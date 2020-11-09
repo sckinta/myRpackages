@@ -32,7 +32,7 @@ summarise_from_ibed <- function(ibed, baitmap){
                 stop("ibed can be either a ibed file or ibed data.frame")
         }
 
-        if ("int_id" %in% colnames(ibed)){
+        if (!"int_id" %in% colnames(ibed)){
                 ibed = read_ibed_with_int_id(ibed)
         }
 
