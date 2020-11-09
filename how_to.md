@@ -85,6 +85,7 @@ three types : error, warning and notes
 fix problem accordingly  
 
 10. set global variable put into R/globals.R (optional)
+
 when there is warning like "no visible binding for global variable",
 add following script (example) to R/globals.R
 
