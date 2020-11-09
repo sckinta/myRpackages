@@ -5,7 +5,9 @@
 #' @param ibed ibed file from Chicago or data.frame with ibed header
 #' ibed header requirement: bait_chr, bait_start, bait_end, bait_name, otherEnd_chr, otherEnd_start,
 #' otherEnd_end, otherEnd_name, int_id
-#' @param baitmap bait design file corresponding to interaction being called in Chicago
+#' @param baitmap bait design file corresponding to interaction being called in Chicago or data.frame
+#' containing column "chr", "start", "end" and "name"|"anno"
+#'
 #'
 #' @return data.frame of summary stats
 #' @export
@@ -15,8 +17,21 @@
 #'
 summarise_from_ibed <- function(ibed, baitmap){
         # depends on baitmap to determine gene/transcript annotation
-        baitmap_df = readr::read_delim(baitmap, delim="\t", col_names=c("bait_chr","bait_start","bait_end","frag_id","bait_name")) %>%
+        if ("data.frame" %in% class(baitmap)){
+                baitmap_df = baitmap
+                colnames(baitmap_df)[grepl("chr",tolower(colnames(baitmap_df)))] = "bait_chr"
+                colnames(baitmap_df)[grepl("start",tolower(colnames(baitmap_df)))] = "bait_start"
+                colnames(baitmap_df)[grepl("end",tolower(colnames(baitmap_df)))] = "bait_end"
+                colnames(baitmap_df)[grepl("name|anno",tolower(colnames(baitmap_df)))] = "bait_name"
+                baitmap_df = baitmap_df %>% select(bait_chr, bait_start, bait_end, bait_name)
+        }else{
+                baitmap_df = readr::read_delim(baitmap, delim="\t",
+                                               col_names=c("bait_chr","bait_start","bait_end","frag_id","bait_name"),
+                                               col_types = "ciiic"
+                ) %>%
                 select(bait_chr, bait_start, bait_end, bait_name)
+        }
+
 
         if("data.frame" %in% class(ibed)){
                 file="ibed"

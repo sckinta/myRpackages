@@ -9,9 +9,10 @@ summarise_from_ibed(ibed, baitmap)
 \arguments{
 \item{ibed}{ibed file from Chicago or data.frame with ibed header
 ibed header requirement: bait_chr, bait_start, bait_end, bait_name, otherEnd_chr, otherEnd_start,
-otherEnd_end, otherEnd_name}
+otherEnd_end, otherEnd_name, int_id}
 
-\item{baitmap}{bait design file corresponding to interaction being called in Chicago}
+\item{baitmap}{bait design file corresponding to interaction being called in Chicago or data.frame
+containing column "chr", "start", "end" and "name"|"anno"}
 }
 \value{
 data.frame of summary stats
