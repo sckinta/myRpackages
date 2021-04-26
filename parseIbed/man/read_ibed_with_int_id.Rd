@@ -27,3 +27,16 @@ doubled for both baits. Some bait-to-bait show significant at only one direction
 This function allows to detect bi-directional or uni-directional significant interactions,
 and assign bi-directional with same interaction id.
 }
+\examples{
+
+\donttest{
+read_ibed_with_int_id(
+system.file("extdata", "chicagoResults.ibed", package = "parseIbed"),
+parse_b2b="only bi-direction"
+)
+}
+
+data(example)
+\donttest{read_ibed_with_int_id(ibed, parse_b2b="double all")}
+
+}

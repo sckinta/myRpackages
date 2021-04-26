@@ -30,6 +30,9 @@ usethis::use_pipe() # most regular one
 usethis::use_package("dplyr")
 usethis::use_package("tidyr")
 usethis::use_package("readr")
+usethis::use_package("rlang")
+usethis::use_package("vroom")
+usethis::use_dev_package("DFbedtools", type = "Imports", remote = "sckinta/myRpackages")
 ```
 
 5 - create function
@@ -75,7 +78,45 @@ devtools::load_all()
 ?<function_name>
 ```
 
-9. check
+9. [add data](https://r-pkgs.org/data.html) (optional)
+There are 3 types of data
+- data loaded automatically when `library(pkg)`
+  - save in `R/sysdata.rda`
+    - can be mutltiple objects.
+    - generate by `usethis::use_data(x, y, z, internal = TRUE)`
+- data load by `data(DATASET)`
+  - save in `data/*.rda`
+    - can only be single object per .rda file
+    - generate by `usethis::use_data(mtcars, overwrite = TRUE)`
+    - need to create document for data `usethis::use_r("mtcars-data.R")`. [example](https://github.com/kbroman/qtlcharts/blob/master/R/grav-data.R) 
+       - to insert Roxygen2 comments, create a dummy function data <- function(){}
+       - then put curser at {|}, then Menu -> Code -> Insert Roxygen Skeleton, then remove dummy function
+       - required Roxygen2 elements: @docType data; @usage data(ibed)
+       - in \\@examples: we can use \\donttest{<R_code>} to make sure that examples wont test
+    - better save the data generation source code in `data-raw/DATASET.R`. 
+      - to initate `data-raw/DATASET.R, type `usethis::use_data_raw()`
+      - put below example in `data-raw/DATASET.R`
+        ```R
+        dir.create("data")
+        bedpe <- vroom::vroom(
+        file.path("inst/extdata/mustache_ICE_loops.1000.bedpe"),
+        col_names=c("chr_a","start_a","end_a","chr_b","start_b","end_b","val1","val2"))
+
+        ibed <- vroom::vroom(file.path("inst/extdata/chicagoResults.ibed"))
+
+
+        baitmap <- vroom::vroom(
+        file.path("inst/extdata/chicago_1frag.baitmap"),
+        col_names=c("chr","start","end","id","anno")
+        )
+
+        usethis::use_data(bedpe, ibed, baitmap, overwrite = TRUE)
+        ```
+- raw data
+  - save in `inst/extdata/*`
+  - after package installation, access those raw data by `system.file("extdata", "chicagoResults.ibed", package = "parseIbed")`
+
+10. check
 
 do this often
 ```
@@ -84,7 +125,7 @@ devtools::check()
 three types : error, warning and notes  
 fix problem accordingly  
 
-10. set global variable put into R/globals.R (optional)
+11. set global variable put into R/globals.R (optional)
 
 when there is warning like "no visible binding for global variable",
 add following script (example) to R/globals.R
@@ -94,7 +135,7 @@ utils::globalVariables(
         c(
                 "bait_chr", "bait_start", "bait_end","bait_name",
                 "otherEnd_chr", "otherEnd_start", "otherEnd_end","otherEnd_name",
-                "N_reads", "score","int_id"
+                "N_reads", "score","int_id", "anno_a", "anno_b", "chr", "chr_a", "chr_b", "end", "end_a", "end_b", "ocr_a", "ocr_b", "pro_anno", "start", "start_a", "start_b"
         )
 )
 ```
@@ -112,3 +153,18 @@ stopifnot(x > 10)
 
 Solution: add package "glue" to DESCRIPTION
 
+- Roxygen to prevent running example
+
+```R
+#' # annotate ibed file on one side
+#'
+#' \donttest{data(ibed)
+#' data(prom_bed)
+#' annotate_bedpe2gene(
+#' ibed %>% mutate_at(vars(ends_with("_start")), function(x){x=x-1}),
+#' prom_bed, gene_side="bait",
+#' bedpe_chr_a="bait_chr", bedpe_start_a="bait_start", bedpe_end_a="bait_end",
+#' bedpe_chr_b="otherEnd_chr", bedpe_start_b="otherEnd_start", bedpe_end_b="otherEnd_end"
+#' )
+#' }
+```

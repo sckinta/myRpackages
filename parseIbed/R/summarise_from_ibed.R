@@ -15,6 +15,11 @@
 #' @import dplyr tidyr
 #' @importFrom stats median
 #'
+#' @examples
+#' data(example)
+#' \donttest{summarise_from_ibed(ibed, baitmap)}
+#'
+#'
 summarise_from_ibed <- function(ibed, baitmap){
         # depends on baitmap to determine gene/transcript annotation
         if ("data.frame" %in% class(baitmap)){

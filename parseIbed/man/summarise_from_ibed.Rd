@@ -20,3 +20,9 @@ data.frame of summary stats
 \description{
 summary statistics of interactions in the context of bait, otherEnd and interaction
 }
+\examples{
+data(example)
+\donttest{summarise_from_ibed(ibed, baitmap)}
+
+
+}

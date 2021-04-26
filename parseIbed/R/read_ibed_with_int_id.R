@@ -18,6 +18,17 @@
 #' @export
 #' @import dplyr tidyr
 #'
+#' @examples
+#'
+#' \donttest{
+#' read_ibed_with_int_id(
+#' system.file("extdata", "chicagoResults.ibed", package = "parseIbed"),
+#' parse_b2b="only bi-direction"
+#' )
+#' }
+#'
+#' data(example)
+#' \donttest{read_ibed_with_int_id(ibed, parse_b2b="double all")}
 #'
 read_ibed_with_int_id <- function(ibed, parse_b2b=NULL, max_score=F){
 

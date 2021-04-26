@@ -24,4 +24,6 @@ read_washU_with_int_id(file)
 
 summarise_from_ibed(ibed, baitmap) # ibed can be df or file
 
+annotate_bedpe2gene(bedpe, prom_bed) # also work for ibed. `?annotate_bedpe2gene`
 
+annotate_bedpe2geneOCR(bedpe, ocr_bed, prom_bed) # also work for ibed. `?annotate_bedpe2geneOCR`
