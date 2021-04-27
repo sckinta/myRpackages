@@ -1,20 +1,20 @@
 # How-to
 Notes from [Shannon Pileggi's R package development tutorial](https://www.pipinghotdata.com/posts/2020-10-25-your-first-r-package-in-1-hour/#tool-kit)
 
-1. load package development required package
+### 1. load package development required package
 
 ```R
 library(usethis)
 library(devtools)
 ```
-2. create new package Rproject
+### 2. create new package Rproject
 
 ```R
 dir.create("/Users/suc1/ShareFile/Personal Folders/Analysis/myRpackages/<packageName>")
 usethis::create_package("/Users/suc1/ShareFile/Personal Folders/Analysis/myRpackages/<packageName>")
 ```
 
-3. ADD license to DESCRIPTION and Edit DESCRIPTION
+### 3. ADD license to DESCRIPTION and Edit DESCRIPTION
 
 ```R
 usethis::use_mit_license("Chun Su")
@@ -22,7 +22,8 @@ usethis::use_mit_license("Chun Su")
 open DESCRIPTION and edit package description
 
 
-4. specify use pipe and package you may need for functions
+### 4. specify use pipe and package you may need for functions
+
 This is global package added to `imports` in `DESCRIPTION`
 
 ```R
@@ -35,14 +36,14 @@ usethis::use_package("vroom")
 usethis::use_dev_package("DFbedtools", type = "Imports", remote = "sckinta/myRpackages")
 ```
 
-5 - create function
+### 5. create function
 This create script with given function name i R/
 ```
 usethis::use_r("<function_name>")
 ```
 open R/<function_name>.R and write your function in file
 
-6 - insert Roxygen skeleton and fill in spots
+### 6. insert Roxygen skeleton and fill in document
 - insert Roxygen skeleton
   - step 1: put mouse inside of function(){|}
   - step 2: insert Roxygen
@@ -64,27 +65,31 @@ The two types of dependencies that need to be specified are
   - package dependencies (global in DESCRIPTION, see step 4)
   - dependencies on functions within packages (for each function `@import` or `@importFrom`)
 
-7. write document
+### 7. automatize document in man/
 
-automatic write documentation, which create man/ and NAMESPACE. *Do not edit man/ and NAMESPACE*
+automatically write documentation, which create man/ and NAMESPACE. **Do not edit man/ and NAMESPACE**
+
 ```
 devtools::document()
 ```
 
-8. test document correct or not
+### 8. test document
 
 ```
 devtools::load_all()
 ?<function_name>
 ```
 
-9. [add data](https://r-pkgs.org/data.html) (optional)
-There are 3 types of data
-- data loaded automatically when `library(pkg)`
+### 9. add data (optional)
+
+[Add data into package ](https://r-pkgs.org/data.html)
+
+#### There are 3 types of data
+1. data loaded automatically when `library(pkg)`
   - save in `R/sysdata.rda`
     - can be mutltiple objects.
     - generate by `usethis::use_data(x, y, z, internal = TRUE)`
-- data load by `data(DATASET)`
+2. data load by `data(DATASET)`
   - save in `data/*.rda`
     - can only be single object per .rda file
     - generate by `usethis::use_data(mtcars, overwrite = TRUE)`
@@ -112,11 +117,11 @@ There are 3 types of data
 
         usethis::use_data(bedpe, ibed, baitmap, overwrite = TRUE)
         ```
-- raw data
+3. raw data
   - save in `inst/extdata/*`
   - after package installation, access those raw data by `system.file("extdata", "chicagoResults.ibed", package = "parseIbed")`
 
-10. check
+### 10. check
 
 do this often
 ```
@@ -125,7 +130,7 @@ devtools::check()
 three types : error, warning and notes  
 fix problem accordingly  
 
-11. set global variable put into R/globals.R (optional)
+### 11. set global variable (optional)
 
 when there is warning like "no visible binding for global variable",
 add following script (example) to R/globals.R
