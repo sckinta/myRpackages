@@ -33,7 +33,7 @@ usethis::use_package("tidyr")
 usethis::use_package("readr")
 usethis::use_package("rlang")
 usethis::use_package("vroom")
-usethis::use_dev_package("DFbedtools", type = "Imports", remote = "sckinta/myRpackages")
+usethis::use_dev_package("DFbedtools", type = "Imports", remote = "sckinta/myRpackages/DFbedtools")
 ```
 
 ### 5. create function
