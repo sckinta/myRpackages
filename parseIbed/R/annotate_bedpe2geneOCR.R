@@ -154,68 +154,72 @@ annotate_bedpe2geneOCR <- function(bedpe, ocr_bed, prom_bed, gene_side=NULL, ocr
 
 
         ## OCR
-        # a side
-        a2ocr=overlap_df(
-                bedpe_gene %>% distinct(chr_a,start_a,end_a),
-                ocr_bed,
-                df1_chr_col="chr_a", df1_start_col="start_a", df1_end_col="end_a",
-                df2_chr_col="chr", df2_start_col="start", df2_end_col="end",
-                df1_0base=T, df2_0base=T, minoverlap=1L
-        )
-        a2ocr=bind_cols(a2ocr$overlap_df1, a2ocr$overlap_df2)
+        if (nrow(bedpe_gene) != 0){
+                # a side
+                a2ocr=overlap_df(
+                        bedpe_gene %>% distinct(chr_a,start_a,end_a),
+                        ocr_bed,
+                        df1_chr_col="chr_a", df1_start_col="start_a", df1_end_col="end_a",
+                        df2_chr_col="chr", df2_start_col="start", df2_end_col="end",
+                        df1_0base=T, df2_0base=T, minoverlap=1L
+                )
+                a2ocr=bind_cols(a2ocr$overlap_df1, a2ocr$overlap_df2)
 
-        # b site
-        b2ocr=overlap_df(
-                bedpe_gene %>% distinct(chr_b,start_b,end_b),
-                ocr_bed,
-                df1_chr_col="chr_b", df1_start_col="start_b", df1_end_col="end_b",
-                df2_chr_col="chr", df2_start_col="start", df2_end_col="end",
-                df1_0base=T, df2_0base=T, minoverlap=1L
-        )
-        b2ocr=bind_cols(b2ocr$overlap_df1, b2ocr$overlap_df2)
+                # b site
+                b2ocr=overlap_df(
+                        bedpe_gene %>% distinct(chr_b,start_b,end_b),
+                        ocr_bed,
+                        df1_chr_col="chr_b", df1_start_col="start_b", df1_end_col="end_b",
+                        df2_chr_col="chr", df2_start_col="start", df2_end_col="end",
+                        df1_0base=T, df2_0base=T, minoverlap=1L
+                )
+                b2ocr=bind_cols(b2ocr$overlap_df1, b2ocr$overlap_df2)
 
-        # add annotation
-        if(is.null(ocr_side)){
-                bedpe_gene2ocr = bedpe_gene %>%
-                        left_join(
-                                a2ocr %>%
-                                        mutate_at(c("start","end"), function(x){format(x,scientific=F)}) %>%
-                                        mutate(ocr_a=glue::glue("{chr}:{start}:{end}:{id}")) %>%
-                                        mutate(ocr_a=gsub(" ","",ocr_a)) %>%
-                                        select(-chr, -start, -end, -id)
-                        ) %>%
-                        left_join(
-                                b2ocr %>%
-                                        mutate_at(c("start","end"), function(x){format(x,scientific=F)}) %>%
-                                        mutate(ocr_b=glue::glue("{chr}:{start}:{end}:{id}")) %>%
-                                        mutate(ocr_b=gsub(" ","",ocr_b)) %>%
-                                        select(-chr, -start, -end, -id)
-                        ) %>%
-                        filter((!is.na(anno_a) & !is.na(ocr_b)) | (!is.na(anno_b) & !is.na(ocr_a)))
-        }else{
-                ocr_side = unique(gsub("chr|start|end","",names(bedpe_cols[grepl(ocr_side, bedpe_cols)])))
-                ocr_anno_name = paste0("ocr",ocr_side)
-                if(length(ocr_side)==1){
-                        if (ocr_side=="_a"){
-                                half2ocr=a2ocr
-                        }else if(ocr_side=="_b"){
-                                half2ocr=b2ocr
-                        }
+                # add annotation
+                if(is.null(ocr_side)){
                         bedpe_gene2ocr = bedpe_gene %>%
                                 left_join(
-                                        half2ocr %>%
+                                        a2ocr %>%
                                                 mutate_at(c("start","end"), function(x){format(x,scientific=F)}) %>%
-                                                mutate(ocr=glue::glue("{chr}:{start}:{end}:{id}")) %>%
-                                                mutate(ocr=gsub(" ","",ocr)) %>%
-                                                select(-chr, -start, -end, -id) %>%
-                                                dplyr::rename_at(c("ocr"), function(x){ocr_anno_name})
+                                                mutate(ocr_a=glue::glue("{chr}:{start}:{end}:{id}")) %>%
+                                                mutate(ocr_a=gsub(" ","",ocr_a)) %>%
+                                                select(-chr, -start, -end, -id)
                                 ) %>%
-                                filter_at(c(gene_anno_name, ocr_anno_name), function(x){!is.na(x)})
+                                left_join(
+                                        b2ocr %>%
+                                                mutate_at(c("start","end"), function(x){format(x,scientific=F)}) %>%
+                                                mutate(ocr_b=glue::glue("{chr}:{start}:{end}:{id}")) %>%
+                                                mutate(ocr_b=gsub(" ","",ocr_b)) %>%
+                                                select(-chr, -start, -end, -id)
+                                ) %>%
+                                filter((!is.na(anno_a) & !is.na(ocr_b)) | (!is.na(anno_b) & !is.na(ocr_a)))
                 }else{
-                        stop("cannot find ocr_side match")
+                        ocr_side = unique(gsub("chr|start|end","",names(bedpe_cols[grepl(ocr_side, bedpe_cols)])))
+                        ocr_anno_name = paste0("ocr",ocr_side)
+                        if(length(ocr_side)==1){
+                                if (ocr_side=="_a"){
+                                        half2ocr=a2ocr
+                                }else if(ocr_side=="_b"){
+                                        half2ocr=b2ocr
+                                }
+                                bedpe_gene2ocr = bedpe_gene %>%
+                                        left_join(
+                                                half2ocr %>%
+                                                        mutate_at(c("start","end"), function(x){format(x,scientific=F)}) %>%
+                                                        mutate(ocr=glue::glue("{chr}:{start}:{end}:{id}")) %>%
+                                                        mutate(ocr=gsub(" ","",ocr)) %>%
+                                                        select(-chr, -start, -end, -id) %>%
+                                                        dplyr::rename_at(c("ocr"), function(x){ocr_anno_name})
+                                        ) %>%
+                                        filter_at(c(gene_anno_name, ocr_anno_name), function(x){!is.na(x)})
+                        }else{
+                                stop("cannot find ocr_side match")
+                        }
                 }
+        }else{
+                bedpe_gene2ocr=bedpe_gene %>%
+                        mutate(ocr_a=character(), ocr_b=character())
         }
-
 
         bedpe_gene2ocr
 }
