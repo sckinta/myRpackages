@@ -173,3 +173,10 @@ Solution: add package "glue" to DESCRIPTION
 #' )
 #' }
 ```
+
+- create vignette
+```R
+usethis::use_vignette("vignette")
+```
+- remove NOTE like `checking for unstated dependencies in vignettes ... NOTE`
+https://github.com/Bioconductor/BiocWorkshops2019/issues/32
