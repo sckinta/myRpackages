@@ -180,3 +180,12 @@ usethis::use_vignette("vignette")
 ```
 - remove NOTE like `checking for unstated dependencies in vignettes ... NOTE`
 https://github.com/Bioconductor/BiocWorkshops2019/issues/32
+
+## dontrun example 
+
+https://stackoverflow.com/questions/68935126/when-and-when-not-to-use-donttest-and-dontrun-in-r-package-development
+
+```
+@examples
+\dontrun{....}
+```
