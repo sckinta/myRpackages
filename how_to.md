@@ -35,6 +35,8 @@ usethis::use_package("rlang")
 usethis::use_package("vroom")
 usethis::use_dev_package("DFbedtools", type = "Imports", remote = "sckinta/myRpackages/DFbedtools")
 ```
+- To enable automatically install bioconductor packages, add `biocViews:` line in `DESCRIPTION` before `Imports:`.
+- when installation takes long time, better suggest user to install their "timeout" option (default is 60). `options(timeout=900)`
 
 ### 5. create function
 This create script with given function name i R/
